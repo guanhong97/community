@@ -1,0 +1,40 @@
+package com.lingnan.community.controller;
+
+import com.lingnan.community.common.api.ApiResult;
+import com.lingnan.community.model.dto.RegisterDTO;
+import com.lingnan.community.model.entity.BmsTip;
+import com.lingnan.community.model.entity.UmsUser;
+import com.lingnan.community.service.IBmsTipService;
+import com.lingnan.community.service.IUmsUserService;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @program: community
+ * @description: 公告栏控制层
+ * @author: Mario
+ * @create: 2021-04-13 21:19
+ **/
+
+@RestController
+@RequestMapping("/ums/user")
+public class UmsUserController extends BaseController {
+
+    @Resource
+    private IUmsUserService umsUserService;
+
+    @PostMapping("/register")
+    public ApiResult<Map<String,Object>> register(@Valid @RequestBody RegisterDTO dto){
+        UmsUser user = umsUserService.executeRegister(dto);
+        if (ObjectUtils.isEmpty(user))
+            return ApiResult.failed("账号注册失败");
+        Map<String,Object> map = new HashMap<>(16);
+        map.put("user",user);
+        return ApiResult.success(map);
+    }
+}
