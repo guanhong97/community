@@ -7,6 +7,8 @@ import com.lingnan.community.model.entity.BmsPost;
 import com.lingnan.community.model.entity.UmsUser;
 import com.lingnan.community.model.vo.PostVO;
 
+import java.util.Map;
+
 public interface IBmsPostService extends IService<BmsPost> {
     /**
      * 获取首页话题列表
@@ -25,4 +27,12 @@ public interface IBmsPostService extends IService<BmsPost> {
      * @return
      */
     BmsPost create(CreateTopicDTO dto, UmsUser principal);
+
+    /**
+     * 查看话题详情
+     *
+     * @param id
+     * @return
+     */
+    Map<String, Object> viewTopic(String id);
 }

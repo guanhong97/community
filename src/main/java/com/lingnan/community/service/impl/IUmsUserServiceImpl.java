@@ -4,16 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lingnan.community.common.exception.ApiAsserts;
 import com.lingnan.community.jwt.JwtUtil;
-import com.lingnan.community.mapper.BmsTipMapper;
+import com.lingnan.community.mapper.BmsTopicMapper;
 import com.lingnan.community.mapper.UmsUserMapper;
 import com.lingnan.community.model.dto.LoginDTO;
 import com.lingnan.community.model.dto.RegisterDTO;
-import com.lingnan.community.model.entity.BmsTip;
 import com.lingnan.community.model.entity.UmsUser;
-import com.lingnan.community.service.IBmsTipService;
+import com.lingnan.community.model.vo.ProfileVO;
 import com.lingnan.community.service.IUmsUserService;
 import com.lingnan.community.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -31,6 +32,9 @@ import java.util.Date;
 public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper
         , UmsUser> implements IUmsUserService {
 
+
+    @Autowired
+    private BmsTopicMapper bmsTopicMapper;
 
     @Override
     public UmsUser executeRegister(RegisterDTO dto) {
@@ -74,6 +78,15 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper
             log.warn("用户不存在or密码验证失败=======>{}", dto.getUsername());
         }
         return token;
+    }
+
+    @Override
+    public ProfileVO getUserProfile(String id) {
+        ProfileVO profile = new ProfileVO();
+        UmsUser user = baseMapper.selectById(id);
+        BeanUtils.copyProperties(user, profile);
+
+        return profile;
     }
 
 }
