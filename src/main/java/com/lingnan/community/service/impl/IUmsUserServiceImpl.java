@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lingnan.community.common.exception.ApiAsserts;
 import com.lingnan.community.jwt.JwtUtil;
+import com.lingnan.community.mapper.BmsFollowMapper;
 import com.lingnan.community.mapper.BmsTopicMapper;
 import com.lingnan.community.mapper.UmsUserMapper;
 import com.lingnan.community.model.dto.LoginDTO;
 import com.lingnan.community.model.dto.RegisterDTO;
+import com.lingnan.community.model.entity.BmsFollow;
+import com.lingnan.community.model.entity.BmsPost;
 import com.lingnan.community.model.entity.UmsUser;
 import com.lingnan.community.model.vo.ProfileVO;
 import com.lingnan.community.service.IUmsUserService;
@@ -35,6 +38,9 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper
 
     @Autowired
     private BmsTopicMapper bmsTopicMapper;
+
+    @Autowired
+    private BmsFollowMapper bmsFollowMapper;
 
     @Override
     public UmsUser executeRegister(RegisterDTO dto) {
@@ -85,6 +91,14 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper
         ProfileVO profile = new ProfileVO();
         UmsUser user = baseMapper.selectById(id);
         BeanUtils.copyProperties(user, profile);
+
+        // 用户文章数
+        int count = bmsTopicMapper.selectCount(new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, id));
+        profile.setTopicCount(count);
+
+        // 粉丝数
+        int followers = bmsFollowMapper.selectCount((new LambdaQueryWrapper<BmsFollow>().eq(BmsFollow::getParentId, id)));
+        profile.setFollowerCount(followers);
 
         return profile;
     }
