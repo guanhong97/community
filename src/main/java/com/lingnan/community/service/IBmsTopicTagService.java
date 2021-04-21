@@ -5,6 +5,7 @@ import com.lingnan.community.model.entity.BmsTag;
 import com.lingnan.community.model.entity.BmsTopicTag;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IBmsTopicTagService extends IService<BmsTopicTag> {
     /**
@@ -23,4 +24,12 @@ public interface IBmsTopicTagService extends IService<BmsTopicTag> {
      * @return
      */
     void createTopicTag(String id, List<BmsTag> tags);
+    /**
+     * 获取标签换脸话题ID集合
+     *
+     * @param id
+     * @return
+     */
+    Set<String> selectTopicIdsByTagId(String id);
+
 }
